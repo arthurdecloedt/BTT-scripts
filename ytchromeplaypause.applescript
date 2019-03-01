@@ -1,4 +1,5 @@
 property lastpaused : ""
+set lastseenpaused to null
 
 tell application "Google Chrome"
 	-- search for a playing video to pause
@@ -10,7 +11,7 @@ tell application "Google Chrome"
 				if state equals "playing" then
 					execute javascript "
         			var player = document.getElementById('movie_player') || document.getElementsByTagName('embed')[0];
-    
+    				
         			if (player) {
           			document.getElementsByClassName('ytp-play-button')[0].click()
 		    		}
@@ -28,7 +29,9 @@ tell application "Google Chrome"
 		if URL equals lastpaused
 			set state to execute javascript "
 			document.querySelectorAll('div[class*=\"-mode\"]')[0].className.match(/(playing|paused|ended)-mode/)[1]"
-			if state equals "paused" then
+			if state equals "ended" then
+				exit repeat
+			else if state equals "paused"
 				execute javascript "
     			var player = document.getElementById('movie_player') || document.getElementsByTagName('embed')[0];
 
